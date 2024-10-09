@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\product_image;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
@@ -54,11 +55,11 @@ class ProductController extends Controller
                 'sprice' => 'required|numeric',
                 'discount' => 'numeric',
                 'fprice' => 'required|numeric',
-                'image'=> 'image',
+            'image.*' => 'image',
                 'description' => '',
                 'display' => '',
             ]);
-        dd($info);
+        // dd($info);
         $cats=$info['cats'];
         $image=$info['image'];
         unset($info['image']);
@@ -69,6 +70,13 @@ class ProductController extends Controller
                 $catproinfo=['product_id'=>$id,'category_id'=>$cid];
                 ProductCategory::create($catproinfo);
             }
+            foreach($image as $pimage){
+                $fileName= time().'_image_'.$pimage->getClientOriginalName();
+                $pimage->move('./product_images/',$fileName);
+                $proimage=['product_id'=>$id,'file_path'=> './product_images/',$fileName];
+                product_image::create($proimage);
+            }
+
         }
         return redirect("/product")->with('success',"Data Saved");
     }
