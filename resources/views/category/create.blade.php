@@ -9,7 +9,7 @@
             <div class="mb-3">
                 <lable for="mname">Main Category</lable>
                 <input type="mname" class="form-control upper" onkeyup="this.value=capitalizefirstLetter(this.value)"
-                    pattern="[A-z 0-9]{2,30}" name="mname" id="mname" placeholder="Enter Main Category" required>
+                    pattern="[A-z 0-9]{2,30}" name="mname" id="mname"  placeholder="Enter Main Category" required>
                 {{-- <detalist id="mainnames">
                     @foreach ($mcats as $mcat)
                         <option value="{{$mcat['mname']}}"></option>
@@ -18,7 +18,7 @@
             </div>
             <div class="mb-3">
                 <lable for="cname">Category</lable>
-                <input type="cname" class="form-control upper" pattern="[A-z 0-9]{2,30}" name="cname" id="cname"
+                <input type="cname" class="form-control upper" autocomplete="off" pattern="[A-z 0-9]{2,30}" name="cname" id="cname"
                     placeholder="Enter Category" required>
             </div>
             <div class="input-group mb-3" >

@@ -58,6 +58,12 @@
                 <textarea name="description" id="description" class="form-control" placeholder="Enter Description"></textarea>
             </div>
             <div class="mb-3">
+                <div class="mainimage">
+                    <label for="mimg">Main Image</label>
+                    <input type="file" name="mimage" class="form-control" accept="image/*" id="mmimg">
+                </div>
+            </div>
+            <div class="mb-3">
                 <div id="main">
                     <div id="d1">
                         <label for="image" class="form-label">Image Upload</label>

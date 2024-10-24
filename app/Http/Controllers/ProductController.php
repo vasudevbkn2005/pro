@@ -17,7 +17,18 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $xdata = Category::where('display', 'yes')->get();
+        // dd($xdata);
+        $data = [];
+        foreach ($xdata as $value) {
+            if (count($value->productids) > 0) {
+                $key = $value['mname'];
+                unset($value['mname']);
+                $data[$key][] = $value;
+            }
+        }
+        // dd($data);
+        return view('product.index', compact('data'));
     }
 
     /**
@@ -48,37 +59,47 @@ class ProductController extends Controller
     {
         // dd($request);
         // dd($_FILES);
-            $info = $request->validate([
-                'cats' => 'required',
-                'name' => 'required',
-                'pprice' => 'required|numeric',
-                'sprice' => 'required|numeric',
-                'discount' => 'numeric',
-                'fprice' => 'required|numeric',
+        $info = $request->validate([
+            'cats' => 'required',
+            'name' => 'required',
+            'pprice' => 'required|numeric',
+            'sprice' => 'required|numeric',
+            'discount' => 'numeric',
+            'fprice' => 'required|numeric',
             'image.*' => 'image',
-                'description' => '',
-                'display' => '',
-            ]);
+            'mimage' => 'image',
+            'description' => '',
+            'display' => '',
+        ]);
         // dd($info);
-        $cats=$info['cats'];
-        $image=$info['image'];
+        $cats = $info['cats'];
+        $image = $info['image'];
+        $main = $info['mimage'];
         unset($info['image']);
         unset($info['cats']);
-        $id=Product::create($info)->id;
-        if($id>0){
-            foreach($cats as $cid){
-                $catproinfo=['product_id'=>$id,'category_id'=>$cid];
+        unset($info['mimage']);
+        $id = Product::create($info)->id;
+        if ($id > 0) {
+            foreach ($cats as $cid) {
+                $catproinfo = ['product_id' => $id, 'category_id' => $cid];
                 ProductCategory::create($catproinfo);
             }
-            foreach($image as $pimage){
-                $fileName= time().'_image_'.$pimage->getClientOriginalName();
-                $pimage->move('./product_images/',$fileName);
-                $proimage=['product_id'=>$id,'file_path'=> './product_images/',$fileName];
+            if ($main) {
+                $filename = time() . '_img_' . $main->getClientOriginalName();
+                $main->move('./product_images/', $filename);
+                $proimage = ['product_id' => $id, 'file_path' => '/product_images/', $filename, 'type' => 'main'];
                 product_image::create($proimage);
             }
-
+            foreach ($image as $pimage) {
+                if ($pimage) {
+                    $fileName = time() . '_image_' . $pimage->getClientOriginalName();
+                    $pimage->move('./product_images/', $fileName);
+                    $proimage = ['product_id' => $id, 'file_path' => '/product_images/', $fileName];
+                    product_image::create($proimage);
+                }
+            }
         }
-        return redirect("/product")->with('success',"Data Saved");
+        return redirect("/product")->with('success', "Data Saved");
     }
 
     /**
@@ -90,6 +111,14 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         //
+    }
+    public function pdisplay($cid)
+    {
+        $data=Product::whereHas('product_category',function($query)use($cid){
+            $query->where('category_id',$cid);
+        })->get();
+        dd($data);
+        return view('product.pdisplay');
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Middleware\Authenticate;
@@ -22,10 +23,11 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-Route::middleware(['auth'])->group(function () {
-    Route::resource('product',ProductController::class);
-    Route::delete('category/mdel',[CategoryController::class,'mdel']);
-    Route::resource('category', CategoryController::class);
-    Route::get('category/updatedisplay/{display}/{id}',[CategoryController::class,'updatedisplay']);
-});
+// Route::middleware(['auth'])->group(function () {
+Route::resource('product', ProductController::class);
+Route::get('product/productdisplay/{id}', [ProductController::class, 'pdisplay']);
+Route::delete('category/mdel', [CategoryController::class, 'mdel']);
+Route::resource('category', CategoryController::class);
+Route::get('category/updatedisplay/{display}/{id}', [CategoryController::class, 'updatedisplay']);
+// });
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
